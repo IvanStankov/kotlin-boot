@@ -5,6 +5,8 @@ import org.springframework.boot.runApplication
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations
 import org.springframework.context.annotation.Bean
 import org.springframework.core.annotation.AnnotationUtils
+import org.springframework.format.FormatterRegistry
+import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo
@@ -12,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import java.lang.reflect.Method
 import java.util.stream.Collectors.mapping
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition
+import java.time.format.DateTimeFormatter
 
 const val BASE_API_PATH = "api"
 
@@ -41,6 +44,13 @@ class BlogApplication : WebMvcConfigurationSupport() {
                 super.registerHandlerMethod(handler, method, resolvedMapping)
             }
         }
+    }
+
+    override fun addFormatters(registry: FormatterRegistry) {
+        val dateTimeFormatterRegistrar = DateTimeFormatterRegistrar()
+        dateTimeFormatterRegistrar.setDateTimeFormatter(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"))
+        dateTimeFormatterRegistrar.setDateFormatter(DateTimeFormatter.BASIC_ISO_DATE)
+        dateTimeFormatterRegistrar.registerFormatters(registry)
     }
 }
 
